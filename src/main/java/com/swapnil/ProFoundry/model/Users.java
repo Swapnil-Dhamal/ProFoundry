@@ -5,7 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -14,13 +19,28 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "users")
 public class Users {
 
-
     @Id
-    private String id;
-    private String username;
+    private String id;  // M
+
+    @Field(name = "email")
+    @Indexed(unique = true)
     private String email;
+
+    @Field(name = "username")
+    @Indexed(unique = true)
+    private String username;
+
+    @Field(name = "password")
     private String password;
-    private String emailOtp;
-    private boolean emailVerified;
+
+    @Field(name = "is2FAEnabled")
+    private Boolean is2FAEnabled = false;
+
+    @DBRef
+    private List<UserSession> sessions;
+
 
 }
+
+
+
