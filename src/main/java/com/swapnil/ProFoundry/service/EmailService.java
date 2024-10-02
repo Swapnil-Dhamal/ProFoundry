@@ -1,4 +1,4 @@
-package com.swapnil.ProFoundry.service.impl;
+package com.swapnil.ProFoundry.service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

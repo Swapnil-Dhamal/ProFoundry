@@ -20,7 +20,7 @@ import java.util.List;
 public class Users {
 
     @Id
-    private String id;  // M
+    private String id;
 
     @Field(name = "email")
     @Indexed(unique = true)
@@ -33,11 +33,20 @@ public class Users {
     @Field(name = "password")
     private String password;
 
+    @Field(name = "emailOtp")
+    private String emailOtp;
+
+    @Field(name = "emailVerified")
+    private boolean emailVerified;
+
     @Field(name = "is2FAEnabled")
     private Boolean is2FAEnabled = false;
 
+
+    private List<String> roles;
+
     @DBRef
-    private List<UserSession> sessions;
+    private List<SessionEntity> userSessions;
 
 
 }

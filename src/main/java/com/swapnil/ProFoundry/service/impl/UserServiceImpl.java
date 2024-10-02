@@ -3,39 +3,41 @@ package com.swapnil.ProFoundry.service.impl;
 
 import com.swapnil.ProFoundry.model.Users;
 import com.swapnil.ProFoundry.repo.UserRepo;
-import com.swapnil.ProFoundry.requests.LoginRequest;
 import com.swapnil.ProFoundry.requests.RegisterRequest;
-import com.swapnil.ProFoundry.responses.LoginResponse;
 import com.swapnil.ProFoundry.responses.RegisterResponse;
 import com.swapnil.ProFoundry.responses.UserResponse;
+import com.swapnil.ProFoundry.service.EmailService;
+//import com.swapnil.ProFoundry.service.JWTService;
 import com.swapnil.ProFoundry.service.JWTService;
 import com.swapnil.ProFoundry.service.UserService;
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
+
 import java.util.Random;
-import java.util.UUID;
+
 import java.util.stream.Collectors;
 
+
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private JWTService jwtService;
 
+    private final JWTService jwtService;
     private final UserRepo userRepo;
     private final EmailService emailService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public UserServiceImpl(UserRepo userRepo, EmailService emailService) {
-        this.userRepo = userRepo;
-        this.emailService = emailService;
-    }
 
 
     @Override
@@ -95,7 +97,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserResponse> getAllUsers(Users users) {
+    public List<UserResponse> getAllUsers() {
         List<Users> usersList = userRepo.findAll();
 
 
@@ -105,6 +107,20 @@ public class UserServiceImpl implements UserService {
 
 
                 ).collect(Collectors.toList());
+    }
+
+    @Override
+    public Users login(String identifier, String password) {
+
+        Users user = userRepo.findByUsernameOrEmail(identifier, identifier);
+
+        if(user!=null && bCryptPasswordEncoder.matches(password, user.getPassword())){
+            return user;
+        }
+        else {
+            return null;
+            }
+
     }
 
     private String generateOtp(){
@@ -123,6 +139,22 @@ public class UserServiceImpl implements UserService {
         String subject="Email Verification";
         String body="Your verification otp is "+otp;
         emailService.sendEmail(email, subject, body);
+    }
+
+
+
+
+    @Override
+    public void configure(HttpSecurity http) throws Exception {
+        http
+                .addFilterBefore(new GenericFilter() {
+                    @Override
+                    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException, ServletException, IOException {
+                        HttpServletRequest httpRequest = (HttpServletRequest) request;
+                        System.out.println("Request URI: " + httpRequest.getRequestURI());
+                        chain.doFilter(request, response);
+                    }
+                }, UsernamePasswordAuthenticationFilter.class);
     }
 
 

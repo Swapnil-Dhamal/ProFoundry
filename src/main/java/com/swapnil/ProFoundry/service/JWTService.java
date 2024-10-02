@@ -1,6 +1,5 @@
 package com.swapnil.ProFoundry.service;
 
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Date;
@@ -66,8 +66,8 @@ public class JWTService {
 
 
     private <T> T extractClaim(String token, Function<Claims, T> claimResolver){
-            final Claims claims=extractAllClaims(token);
-            return claimResolver.apply(claims);
+        final Claims claims=extractAllClaims(token);
+        return claimResolver.apply(claims);
     }
 
     private Claims extractAllClaims(String token) {

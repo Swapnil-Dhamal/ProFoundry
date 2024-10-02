@@ -14,6 +14,10 @@ public class LoginResponse {
 
     private String username;
     private String email;
+    private String sessionId;
+    private String message;
 
 
+    public LoginResponse(String message, Object o) {
+    }
 }

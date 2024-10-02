@@ -7,6 +7,7 @@ import com.swapnil.ProFoundry.requests.RegisterRequest;
 import com.swapnil.ProFoundry.responses.LoginResponse;
 import com.swapnil.ProFoundry.responses.RegisterResponse;
 import com.swapnil.ProFoundry.responses.UserResponse;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,5 +19,9 @@ public interface UserService {
 
     void verify(String email, String emailOtp);
 
-    List<UserResponse> getAllUsers(Users users);
+    List<UserResponse> getAllUsers();
+
+    Users login(String identifier, String password);
+
+    void configure(HttpSecurity http) throws Exception;
 }
