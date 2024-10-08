@@ -53,7 +53,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestParam String identifier, @RequestParam String password, HttpServletRequest request) {
+    public ResponseEntity<?> login(@RequestParam(required = false) String identifier, @RequestParam String password, HttpServletRequest request) {
         Users user = userService.login(identifier, password);
         if (user != null) {
 
@@ -71,6 +71,19 @@ public class AuthController {
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username/email or password.");
         }
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestParam String email){
+        userService.processForgotPassword(email);
+        return ResponseEntity.ok("Password reset link has been sent to your email");
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestParam String token, @RequestParam String newPassword) {
+
+        userService.resetPassword(token, newPassword);
+        return ResponseEntity.ok("Password has been reset successfully");
     }
 
     @GetMapping("/users")
