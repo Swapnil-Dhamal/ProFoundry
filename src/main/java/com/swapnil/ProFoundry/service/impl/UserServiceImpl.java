@@ -24,6 +24,7 @@ import java.util.List;
 
 import java.util.Random;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 
@@ -156,6 +157,34 @@ public class UserServiceImpl implements UserService {
                     }
                 }, UsernamePasswordAuthenticationFilter.class);
     }
+
+    @Override
+    public void processForgotPassword(String email) {
+        Users users=userRepo.findByEmail(email);
+        if(users != null){
+            String token= UUID.randomUUID().toString();
+            users.setResetToken(token);
+            userRepo.save(users);
+
+            String resetLink = "http://localhost:8080/auth/reset-password?token=" + token;
+            emailService.sendEmail(email, "Password Reset Request", "To reset your password, click the following link: "+ resetLink);
+
+        }
+    }
+
+    public void resetPassword(String token, String newPassword){
+        Users users=userRepo.findByResetToken(token);
+
+        if(users!= null){
+            users.setPassword(newPassword);
+            users.setResetToken(null);
+            userRepo.save(users);
+        }
+        else{
+            throw new IllegalArgumentException("Invalid reset token");
+        }
+    }
+
 
 
 }

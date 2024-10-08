@@ -24,4 +24,8 @@ public interface UserService {
     Users login(String identifier, String password);
 
     void configure(HttpSecurity http) throws Exception;
+
+    void processForgotPassword(String email);
+
+    void resetPassword(String token, String newPassword);
 }

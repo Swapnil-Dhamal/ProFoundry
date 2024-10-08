@@ -36,6 +36,10 @@ public class Users {
     @Field(name = "emailOtp")
     private String emailOtp;
 
+    @Field(name = "resetToken")
+    private String resetToken;
+
+
     @Field(name = "emailVerified")
     private boolean emailVerified;
 
